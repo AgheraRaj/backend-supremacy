@@ -1,29 +1,25 @@
 const fs = require("fs");
 
-const os = require("os");
+mkdirSync;
 
-console.log(os.cpus().length)
+fs.mkdirSync("./test.txt", (error) => {
+  if (error) {
+    console.log(error);
+  }
+});
 
-// mkdirSync;
+// statSync;
 
-// fs.mkdirSync("./test.txt", (error) => {
-//   if (error) {
-//     console.log(error);
-//   }
-// });
+const stat = fs.statSync("./text.txt");
 
-// // statSync;
+console.log(stat);
 
-// const stat = fs.statSync("./text.txt");
+// UnlinkSync;
 
-// console.log(stat);
+fs.unlinkSync("./world.txt");
 
-// // UnlinkSync;
+// copyFileSync;
 
-// fs.unlinkSync("./world.txt");
+fs.writeFileSync("./text.txt", "Hello, World!");
 
-// // copyFileSync;
-
-// fs.writeFileSync("./text.txt", "Hello, World!");
-
-// fs.copyFileSync("./text.txt", "./world.txt");
+fs.copyFileSync("./text.txt", "./world.txt");
