@@ -6,7 +6,7 @@ import authRoutes from "./routes/auth.routes.js";
 import taskRoutes from "./routes/task.routes.js";
 
 const app = express();
-const PORT = 3000;
+const PORT = 8080;
 
 // global middleware
 app.use(express.json());
@@ -22,6 +22,13 @@ app.use(
     },
   })
 );
+
+app.use(cookieParser());
+
+// routes
+app.get("/", (req, res) => {
+  res.send("Hello World");
+});
 
 app.use("/auth", authRoutes);
 app.use("/task" , taskRoutes);
