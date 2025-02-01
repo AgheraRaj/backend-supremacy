@@ -5,6 +5,7 @@ import { useState } from 'react';
 import AuthImagePattern from '../components/AuthImagePattern.jsx';
 import { Link } from 'react-router-dom';
 import axios from "axios";
+import { useAuthStore } from "../store/useAuthStore.js"
 
 const SignUpPage = () => {
 
