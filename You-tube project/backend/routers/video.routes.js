@@ -51,7 +51,7 @@ routes.post("/upload", checkAuth, async(req, res)=>{
     }
 })
 
-router.put("/update/:id", checkAuth, async (req, res) => {
+routes.put("/update/:id", checkAuth, async (req, res) => {
     try {
       const { title, description, category, tags } = req.body;
       const videoId = req.params.id;
