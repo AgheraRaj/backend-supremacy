@@ -140,16 +140,23 @@ routes.get("/my-videos", checkAuth, async (req, res) => {
 // get video by id
 routes.get("/:id", async (req, res) => {
   try {
-    const video = await Video.findById(req.params.id);
+    const videoId = req.params.id;
+    const userId = req.user._id;
 
-    if (!video) res.status(404).json({ error: "video not found" });
+    // Use findByIdAndUpdate to add the user ID to the viewedBy array if not already present
+    const video = await Video.findByIdAndUpdate(
+      videoId,
+      {
+        $addToSet: { viewedBy: userId },  // Add user ID to viewedBy array, avoiding duplicates
+      },
+      { new: true }  // Return the updated video document
+    );
 
-    video.views += 1;
-    await video.save()
+    if (!video) return res.status(404).json({ error: "Video not found" });
 
-    res.status(200).json(video)
+    res.status(200).json(video);
   } catch (error) {
-    console.error("Update Error:", error);
+    console.error("Fetch Error:", error);
     res.status(500).json({ message: "Something went wrong" });
   }
 })
@@ -176,4 +183,39 @@ routes.get("/tags/:tag", async (req, res) => {
     res.status(500).json({ message: "Something went wrong" });
   }
 });
+
+//  Like Video
+routes.post("/like", checkAuth , async (req, res) => {
+  try {
+    const {  videoId } = req.body;
+
+    await Video.findByIdAndUpdate(videoId, {
+      $addToSet: { likedBy: req.user._id  },
+      $pull: { disLikedBy: req.user._id }, 
+    });
+
+    res.status(200).json({ message: "Liked the video" });
+  } catch (error) {
+    console.error("Like Error:", error);
+    res.status(500).json({ error: "Something went wrong" });
+  }
+});
+
+// UnLike Video
+routes.post("/dislike",checkAuth , async (req, res) => {
+  try {
+    const { videoId } = req.body;
+
+    await Video.findByIdAndUpdate(videoId, {
+      $addToSet: { disLikedBy: req.user._id},
+      $pull: { likedBy: req.user._id }, 
+    });
+
+    res.status(200).json({ message: "Disliked the video" });
+  } catch (error) {
+    console.error("Dislike Error:", error);
+    res.status(500).json({ error: "Something went wrong" });
+  }
+});
+
 export default routes;
