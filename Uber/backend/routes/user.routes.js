@@ -1,15 +1,16 @@
 import express from "express";
-import { registerValidator } from "../validatores/user.velidatore.js";
-import { registerUser } from "../controllers/user.controller.js";
+import { loginValidator, registerValidator } from "../validatores/user.velidatore.js";
+import { getUserProfile, loginUser, logoutUser, registerUser } from "../controllers/user.controller.js";
+import { authUser } from "../middleware/auth.middleware.js";
 
 const router = express.Router();
 
 router.post("/register", registerValidator, registerUser);
 
-router.post("/login")
+router.post("/login", loginValidator, loginUser)
 
-router.get("/profile")
+router.get("/profile", authUser, getUserProfile);
 
-router.post("/logout")
+router.get("/logout", authUser, logoutUser);
 
 export default router;

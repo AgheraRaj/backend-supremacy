@@ -35,3 +35,46 @@ export const registerUser = async (req, res) => {
         });
     }
 }
+
+export const loginUser = async (req, res) => {
+    try {
+        const errors = validationResult(req);
+        if(!errors.isEmpty()){
+            return res.status(400).json({ errors: errors.array() });
+        }
+
+        const { email, password } = req.body;
+
+        const user = await userModel.findOne({ email }).select("+password");
+
+        if(!user){
+            return res.status(400).json({ message: "User not found" });
+        }
+
+        const ismatch = await user.comparePassword(password);
+
+        if(!ismatch){
+            return res.status(400).json({ message: "Invalid password" });
+        }
+
+        const token = user.generateAuthToken();
+
+        res.cookie("token", token);
+
+        res.status(200).json({ user, token });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            message: error.message
+        });
+    }
+}
+
+export const getUserProfile = async(req ,res , next)=>{
+    res.status(200).json(req.user);
+}
+
+export const logoutUser = async(req,res, next)=>{
+    res.clearCookie("token");
+    res.status(200).json({message: "Logged out successfully"})
+}
